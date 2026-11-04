@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>שירי קריוקי</title>
+<meta name="description" content="שירי קריוקי: פלייבק בלי קול הזמר, והמילים נצבעות בזמן השירה.">
+<meta name="theme-color" content="#16111d">
+<meta property="og:title" content="שירי קריוקי">
+<meta property="og:description" content="שירי קריוקי עם מילים מתוזמנות">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2316111d'/%3E%3Crect x='24' y='10' width='16' height='28' rx='8' fill='%23f2c14e'/%3E%3Cpath d='M18 30a14 14 0 0 0 28 0M32 44v10M24 54h16' stroke='%23f2c14e' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #16111d;
+  --bg2: #211a2b;
+  --card: #261e31;
+  --card-hi: #30263d;
+  --line: rgba(255, 255, 255, .09);
+  --text: #f6f1ea;
+  --muted: #b6abbe;
+  --gold: #f2c14e;
+  --gold-deep: #c9952a;
+  --radius: 16px;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Rubik", system-ui, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(900px 520px at 85% -120px, rgba(242, 193, 78, .16), transparent 70%),
+    radial-gradient(700px 480px at 0% 10%, rgba(140, 92, 190, .18), transparent 70%),
+    var(--bg);
+  background-attachment: fixed;
+}
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 16px 56px; }
+
+header { padding: 36px 0 22px; display: flex; align-items: center; gap: 16px; }
+.logo {
+  flex: none; width: 56px; height: 56px; border-radius: 16px;
+  display: grid; place-items: center;
+  background: linear-gradient(160deg, #3a2d4a, #241b30);
+  border: 1px solid var(--line);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
+}
+h1 { margin: 0; font-size: clamp(28px, 5vw, 44px); font-weight: 800; letter-spacing: -.5px; line-height: 1.05; }
+h1 span { color: var(--gold); }
+.sub { margin: 6px 0 0; color: var(--muted); font-size: 15px; }
+
+.stage { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; align-items: start; }
+.screen {
+  position: relative; border-radius: var(--radius); overflow: hidden; background: #000;
+  aspect-ratio: 16 / 9;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .55), 0 0 0 1px var(--line);
+}
+video { display: block; width: 100%; height: 100%; background: #000; }
+.now {
+  background: linear-gradient(170deg, var(--card-hi), var(--card));
+  border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 20px; display: flex; flex-direction: column; gap: 14px; min-height: 100%;
+}
+.label { font-size: 13px; color: var(--gold); font-weight: 500; letter-spacing: .3px; }
+.now h2 { margin: 0; font-size: 26px; font-weight: 700; line-height: 1.2; }
+.now .artist { margin: 0; color: var(--muted); font-size: 16px; }
+.controls { display: flex; gap: 8px; margin-top: auto; }
+button { font: inherit; color: inherit; cursor: pointer; }
+.btn {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+  height: 46px; border-radius: 12px; border: 1px solid var(--line);
+  background: rgba(255, 255, 255, .05); font-size: 15px; font-weight: 500;
+  transition: background .15s, transform .1s;
+}
+.btn:hover { background: rgba(255, 255, 255, .1); }
+.btn:active { transform: scale(.97); }
+.now > .btn { flex: none; }
+.btn.primary { background: var(--gold); color: #21180a; border-color: transparent; font-weight: 700; }
+.btn.primary:hover { background: #f6cd68; }
+.btn svg { width: 18px; height: 18px; flex: none; }
+.toggle { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); cursor: pointer; user-select: none; }
+.toggle input { position: absolute; opacity: 0; pointer-events: none; }
+.switch { width: 40px; height: 24px; border-radius: 12px; background: rgba(255, 255, 255, .14); position: relative; transition: background .2s; flex: none; }
+.switch::after { content: ""; position: absolute; top: 3px; right: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform .2s; }
+.toggle input:checked + .switch { background: var(--gold-deep); }
+.toggle input:checked + .switch::after { transform: translateX(-16px); }
+.toggle input:focus-visible + .switch { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 36px 0 16px; flex-wrap: wrap; }
+.bar h3 { margin: 0; font-size: 22px; font-weight: 700; }
+.bar h3 small { color: var(--muted); font-weight: 400; font-size: 15px; margin-inline-start: 6px; }
+.search { position: relative; width: min(320px, 100%); }
+.search input {
+  width: 100%; height: 44px; border-radius: 12px; border: 1px solid var(--line);
+  background: rgba(255, 255, 255, .05); color: var(--text); font: inherit; font-size: 15px;
+  padding: 0 40px 0 14px;
+}
+.search input::placeholder { color: #8d8296; }
+.search input:focus { outline: none; border-color: var(--gold); background: rgba(255, 255, 255, .08); }
+.search svg { position: absolute; top: 13px; right: 13px; width: 18px; height: 18px; color: #8d8296; pointer-events: none; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; list-style: none; margin: 0; padding: 0; }
+.song {
+  width: 100%; text-align: right; padding: 0; border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--card); overflow: hidden; display: flex; flex-direction: column;
+  transition: transform .18s, border-color .18s, background .18s;
+}
+.song:hover { transform: translateY(-3px); background: var(--card-hi); }
+.song:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.thumb { position: relative; aspect-ratio: 16 / 9; background: #0d0a12; }
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.dur {
+  position: absolute; bottom: 8px; left: 8px; padding: 2px 8px; border-radius: 8px;
+  background: rgba(0, 0, 0, .72); font-size: 13px; font-variant-numeric: tabular-nums; direction: ltr;
+}
+.play-badge {
+  position: absolute; inset: 0; display: grid; place-items: center; opacity: 0;
+  background: rgba(10, 6, 16, .35); transition: opacity .18s;
+}
+.play-badge i {
+  width: 54px; height: 54px; border-radius: 50%; background: var(--gold); display: grid; place-items: center;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .4);
+}
+.song:hover .play-badge, .song:focus-visible .play-badge { opacity: 1; }
+.meta { flex: 1; min-width: 0; padding: 12px 14px 14px; display: flex; gap: 12px; align-items: flex-start; }
+.num { flex: none; min-width: 24px; color: var(--gold); font-weight: 700; font-size: 15px; padding-top: 2px; font-variant-numeric: tabular-nums; }
+.meta > div { flex: 1; min-width: 0; }
+.meta b { display: block; font-size: 17px; font-weight: 500; line-height: 1.3; }
+.meta div span { display: block; color: var(--muted); font-size: 14px; margin-top: 3px; }
+.song.on { border-color: var(--gold); background: var(--card-hi); }
+.eq { display: none; flex: none; width: 24px; height: 18px; gap: 3px; align-items: flex-end; padding-top: 3px; }
+.playing .song.on .eq { display: flex; }
+.playing .song.on .num { display: none; }
+.eq i { flex: 1; background: var(--gold); border-radius: 2px; height: 40%; }
+.song.on .eq i { animation: eq .9s ease-in-out infinite alternate; }
+.eq i:nth-child(2) { animation-delay: -.3s; height: 80%; }
+.eq i:nth-child(3) { animation-delay: -.6s; height: 60%; }
+@keyframes eq { from { height: 25%; } to { height: 100%; } }
+.empty { color: var(--muted); padding: 24px 0; display: none; }
+[hidden] { display: none !important; }
+.section-title { margin: 36px 0 16px; font-size: 18px; font-weight: 500; color: var(--muted); }
+
+footer { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--line); color: #8d8296; font-size: 13px; line-height: 1.6; }
+
+@media (max-width: 860px) {
+  .stage { grid-template-columns: 1fr; }
+  .now { min-height: 0; padding: 16px; }
+  .now h2 { font-size: 22px; }
+}
+@media (max-width: 560px) {
+  header { padding: 24px 0 18px; gap: 12px; }
+  .logo { width: 48px; height: 48px; border-radius: 14px; }
+  .screen { margin: 0 -16px; border-radius: 0; box-shadow: none; }
+  .grid { grid-template-columns: 1fr; gap: 10px; }
+  .song { flex-direction: row; align-items: center; }
+  .song { align-items: stretch; }
+  .thumb { width: 40%; flex: none; aspect-ratio: auto; min-height: 78px; }
+  .meta { padding: 10px 12px; }
+  .meta b { font-size: 16px; }
+  .play-badge { display: none; }
+  .bar { margin-top: 28px; }
+  .search { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo" aria-hidden="true">
+      <svg width="30" height="30" viewBox="0 0 64 64"><rect x="22" y="6" width="20" height="34" rx="10" fill="#f2c14e"/><path d="M14 30a18 18 0 0 0 36 0M32 48v8M22 58h20" stroke="#f2c14e" stroke-width="5" fill="none" stroke-linecap="round"/></svg>
+    </div>
+    <div>
+      <h1>שירי <span>קריוקי</span></h1>
+      <p class="sub" id="sub">פלייבק בלי קול הזמר · המילים נצבעות בזמן השירה</p>
+    </div>
+  </header>
+
+  <section class="stage" aria-label="נגן">
+    <div class="screen">
+      <video id="video" controls playsinline preload="metadata"></video>
+    </div>
+    <div class="now">
+      <div class="label" id="state">בחרו שיר</div>
+      <div>
+        <h2 id="nowTitle"></h2>
+        <p class="artist" id="nowArtist"></p>
+      </div>
+      <label class="toggle"><input type="checkbox" id="auto" checked><span class="switch"></span>לעבור לשיר הבא בסוף</label>
+      <div class="controls">
+        <button class="btn" id="prev" title="השיר הקודם"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zM9.5 12 18 6v12z" transform="matrix(-1 0 0 1 24 0)"/></svg>הקודם</button>
+        <button class="btn primary" id="next" title="השיר הבא">הבא<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zM9.5 12 18 6v12z"/></svg></button>
+      </div>
+      <button class="btn" id="shuffle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>שיר אקראי</button>
+    </div>
+  </section>
+
+  <div class="bar">
+    <h3>השירים<small id="count"></small></h3>
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="חיפוש שיר או זמר" aria-label="חיפוש שיר או זמר" autocomplete="off">
+    </div>
+  </div>
+  <ul class="grid" id="main"></ul>
+  <p class="empty" id="empty">לא נמצא שיר כזה.</p>
+  <p class="empty" id="none">עוד אין כאן שירים.</p>
+
+  <footer>
+    הקול הופרד מהשירים המקוריים, והמילים תומללו מהשירה ותוזמנו לכל מילה.
+    מקשים: <b>N</b> השיר הבא · <b>P</b> הקודם · רווח עצירה והמשך · <b>F</b> מסך מלא.
+  </footer>
+</div>
+
+<script>
+let SONGS = [];
+
+const $ = id => document.getElementById(id);
+const video = $("video");
+let cur = -1;
+
+function fmt(s) {
+  const m = Math.floor(s / 60), r = Math.round(s % 60);
+  return m + ":" + String(r).padStart(2, "0");
+}
+
+function card(s, i) {
+  const li = document.createElement("li");
+  const b = document.createElement("button");
+  b.className = "song";
+  b.dataset.i = i;
+  b.innerHTML =
+    '<div class="thumb"><img loading="lazy" alt="" src="p/' + s.id + '.jpg?v=' + (s.v || 0) + '">' +
+    '<span class="dur">' + fmt(s.dur) + '</span>' +
+    '<span class="play-badge"><i><svg width="22" height="22" viewBox="0 0 24 24" fill="#21180a"><path d="M8 5v14l11-7z"/></svg></i></span></div>' +
+    '<div class="meta"><span class="num">' + (i + 1) + '</span><span class="eq"><i></i><i></i><i></i></span>' +
+    '<div><b></b><span></span></div></div>';
+  b.querySelector("b").textContent = s.title;
+  b.querySelector(".meta div span").textContent = s.artist;
+  b.setAttribute("aria-label", s.title + " – " + s.artist);
+  b.addEventListener("click", () => play(i, true));
+  li.appendChild(b);
+  li.dataset.search = (s.title + " " + s.artist + " " + (s.alt || "")).toLowerCase();
+  return li;
+}
+
+
+function load(i) {
+  cur = i;
+  const s = SONGS[i];
+  video.src = "v/" + s.id + ".mp4?v=" + (s.v || 0);
+  video.poster = "p/" + s.id + ".jpg?v=" + (s.v || 0);
+  $("nowTitle").textContent = s.title;
+  $("nowArtist").textContent = s.artist;
+  document.title = s.title + " · שירי קריוקי";
+  document.querySelectorAll(".song").forEach(b => b.classList.toggle("on", +b.dataset.i === i));
+  history.replaceState(null, "", "#" + s.id);
+  if ("mediaSession" in navigator) {
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: s.title, artist: s.artist, album: "שירי קריוקי",
+      artwork: [{ src: "p/" + s.id + ".jpg", sizes: "640x360", type: "image/jpeg" }],
+    });
+  }
+}
+
+function play(i, scroll) {
+  load((i + SONGS.length) % SONGS.length);
+  video.play().catch(() => {});
+  if (scroll) document.querySelector(".stage").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function setState() {
+  const playing = !video.paused && !video.ended;
+  document.body.classList.toggle("playing", playing);
+  $("state").textContent = cur < 0 ? "בחרו שיר" : playing ? "מתנגן עכשיו" : "מוכן לשירה";
+}
+["play", "pause", "ended", "emptied"].forEach(e => video.addEventListener(e, setState));
+video.addEventListener("ended", () => { if ($("auto").checked) play(cur + 1, false); });
+
+$("next").addEventListener("click", () => SONGS.length && play(cur + 1, false));
+$("prev").addEventListener("click", () => play(cur < 0 ? 0 : cur - 1, false));
+$("shuffle").addEventListener("click", () => {
+  let i;
+  do { i = Math.floor(Math.random() * SONGS.length); } while (SONGS.length > 1 && i === cur);
+  play(i, false);
+});
+if ("mediaSession" in navigator) {
+  navigator.mediaSession.setActionHandler("nexttrack", () => play(cur + 1, false));
+  navigator.mediaSession.setActionHandler("previoustrack", () => play(cur - 1, false));
+}
+
+$("q").addEventListener("input", e => {
+  const q = e.target.value.trim().toLowerCase();
+  let shown = 0;
+  document.querySelectorAll(".grid li").forEach(li => {
+    const ok = !q || li.dataset.search.includes(q);
+    li.hidden = !ok;
+    shown += ok;
+  });
+  $("empty").style.display = shown ? "none" : "block";
+});
+
+document.addEventListener("keydown", e => {
+  if (e.target.tagName === "INPUT" || e.ctrlKey || e.metaKey || e.altKey) return;
+  const k = e.key.toLowerCase();
+  if (!SONGS.length) return;
+  if (k === "n" || k === "מ") play(cur + 1, false);
+  else if (k === "p" || k === "פ") play(cur < 0 ? 0 : cur - 1, false);
+  else if (k === "f" || k === "כ") { video.requestFullscreen ? video.requestFullscreen() : video.webkitEnterFullscreen && video.webkitEnterFullscreen(); }
+  else if (k === " " && e.target === document.body) { e.preventDefault(); if (!SONGS.length) return; if (cur < 0) play(0, false); else video.paused ? video.play() : video.pause(); }
+});
+
+function pick() {
+  const i = SONGS.findIndex(s => s.id === location.hash.slice(1));
+  if (i >= 0 && i !== cur) load(i);
+}
+window.addEventListener("hashchange", pick);
+
+fetch("songs.json", { cache: "no-cache" }).then(r => r.ok ? r.json() : []).catch(() => []).then(list => {
+  SONGS = list;
+  SONGS.forEach((s, i) => $("main").appendChild(card(s, i)));
+  $("count").textContent = SONGS.length === 1 ? "שיר אחד" : SONGS.length + " שירים";
+  $("none").style.display = SONGS.length ? "none" : "block";
+  document.querySelector(".stage").hidden = !SONGS.length;
+  document.querySelector(".search").hidden = SONGS.length < 2;
+  const i = SONGS.findIndex(s => s.id === location.hash.slice(1));
+  if (SONGS.length) load(i >= 0 ? i : 0);
+  setState();
+});
+</script>
+</body>
+</html>
