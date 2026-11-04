@@ -15,22 +15,34 @@ button { font: inherit; font-weight: 700; border: 0; border-radius: 11px; paddin
 @keyframes s { to { transform: rotate(1turn); } }
 </style></head><body><div class="card">
 <div class="spin" id="spin"></div><h1>סטודיו <span>קריוקי</span></h1>
-<p id="msg">פותח את הסטודיו…</p><button id="again" hidden onclick="go()">לנסות שוב</button>
+<p id="msg">פותח את הסטודיו…</p><button id="again" hidden>לנסות שוב</button>
 </div><script>
 const msg = document.getElementById("msg"), again = document.getElementById("again"), spin = document.getElementById("spin");
-function show(text) { msg.textContent = text; again.hidden = false; spin.hidden = true; }
-async function go() {
-  again.hidden = true; spin.hidden = false; msg.textContent = "פותח את הסטודיו…";
-  try {
-    const info = await (await fetch("studio.json", { cache: "no-cache" })).json();
-    if (!info.url) return show("הגישה מרחוק לסטודיו כבויה עכשיו. אפשר להדליק אותה בסטודיו שבמחשב.");
-    const ctl = new AbortController(); setTimeout(() => ctl.abort(), 9000);
-    const r = await fetch(info.url + "/api/ping", { signal: ctl.signal, cache: "no-store" });
-    if (!r.ok) throw new Error();
-    location.replace(info.url + "/");
-  } catch {
-    show("הסטודיו לא זמין עכשיו. צריך שהמחשב יהיה דלוק והסטודיו פתוח בו. אם הוא הופעל ממש עכשיו, חכו דקה ונסו שוב.");
-  }
+const TRIES = 18, WAIT = 10;   // keep checking for 3 minutes: the link needs about a minute after the studio starts
+let tries = 0, timer = null;
+function show(text, retrying) {
+  msg.textContent = text + (retrying ? " בודק שוב בעוד רגע…" : "");
+  again.hidden = retrying; spin.hidden = !retrying;
 }
-go();
+async function reachable(url) {
+  const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 9000);
+  try { return (await fetch(url + "/api/ping?t=" + Date.now(), { signal: ctl.signal, cache: "no-store" })).ok; }
+  catch { return false; } finally { clearTimeout(t); }
+}
+async function go(manual) {
+  clearTimeout(timer);
+  if (manual) tries = 0;
+  again.hidden = true; spin.hidden = false;
+  if (!tries) msg.textContent = "פותח את הסטודיו…";
+  tries++;
+  let info = {};
+  try { info = await (await fetch("studio.json?t=" + Date.now(), { cache: "no-store" })).json(); } catch { /* offline? */ }
+  if (info.url && await reachable(info.url)) return location.replace(info.url + "/");
+  const retrying = tries < TRIES;
+  show(!info.url ? "הגישה מרחוק לסטודיו כבויה עכשיו. אפשר להדליק אותה בסטודיו שבמחשב."
+                 : "הסטודיו לא זמין עכשיו. צריך שהמחשב יהיה דלוק והסטודיו פתוח בו.", retrying);
+  if (retrying) timer = setTimeout(go, WAIT * 1000);
+}
+again.onclick = () => go(true);
+go(true);
 </script></body></html>
