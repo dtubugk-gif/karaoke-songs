@@ -324,7 +324,7 @@ window.addEventListener("hashchange", pick);
 fetch("songs.json", { cache: "no-cache" }).then(r => r.ok ? r.json() : []).catch(() => []).then(list => {
   SONGS = list;
   SONGS.forEach((s, i) => $("main").appendChild(card(s, i)));
-  $("count").textContent = SONGS.length === 1 ? "שיר אחד" : SONGS.length + " שירים";
+  $("count").textContent = SONGS.length === 1 ? "שיר אחד" : SONGS.length ? SONGS.length + " שירים" : "";
   $("none").style.display = SONGS.length ? "none" : "block";
   document.querySelector(".stage").hidden = !SONGS.length;
   document.querySelector(".search").hidden = SONGS.length < 2;
